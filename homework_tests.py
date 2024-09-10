@@ -44,3 +44,7 @@ t.run()
 t.print_results()
 t.reset()
 
+t.test_ctrl_c()
+t.print_results()
+t.reset()
+

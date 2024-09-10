@@ -2,6 +2,8 @@
 import os
 import re
 import sys
+import signal
+import time
 
 import pexpect
 
@@ -173,6 +175,22 @@ class HomeworkTester(object):
         os.environ['PATH'] = path_backup
 
         return self.results
+
+    def test_ctrl_c(self):
+        """Spawn new shell and test if shell gets killed by Ctrl-C."""
+
+        self._new_shell()
+
+        os.kill(self.p.pid, signal.SIGINT)
+        time.sleep(0.5)
+
+        if not self.p.isalive():
+            # The shell died
+            result = TestResult(TestCase("Ctrl-C", "alive"), True, "CRASH!")
+        else:
+            result = TestResult(TestCase("Ctrl-C", "alive"), False, "")
+
+        self.results.append(result)
 
     def print_results(self):
         self.printer.results(self.results)
